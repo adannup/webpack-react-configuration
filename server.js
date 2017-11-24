@@ -18,6 +18,25 @@ app.use(webpackDevMiddleware(compiler, {
 
 app.use(webpackHotMiddleware(compiler));
 
-app.listen(PORT, () => {
+// socket.io
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
+io.on('connection', (socket) => {
+  console.log('A user connected');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+
+  io.emit('welcomeMessage', {
+    id: 1,
+    name: 'guest',
+    message: 'welcome guest',
+    age: 25
+  });
+
+});
+
+http.listen(PORT, () => {
   console.log(`Server up on port: ${PORT} \n`);
 });
